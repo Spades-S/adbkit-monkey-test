@@ -1,11 +1,13 @@
-var io = require('socket.io').listen( 3030 );
+var app = require('http').createServer();
+var io = require('socket.io')(app);
+app.listen(3030);
 
 var assert = require('assert');
 var monkey = require('adbkit-monkey');
 var PORT = 5050;
 var client = monkey.connect({port: PORT});
 var deviceScreenWidth, deviceScreenHeight;
-io.sockets.on('connection', function(socket){
+io.on('connection', function(socket){
 
     client.getDisplayWidth(function(err, width) { //异步调用
         assert.ifError(err);
@@ -29,6 +31,7 @@ io.sockets.on('connection', function(socket){
                  websizeToDevicesize(data, deviceScreenWidth, deviceScreenHeight);
                  client.touchDown(data.x, data.y, function(err){
                      console.log('error:' + err);
+                     
                  });
             });
 
